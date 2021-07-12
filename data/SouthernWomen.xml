@@ -1,0 +1,135 @@
+<DynamicMetaNetwork id="davis">
+<MetaNetwork id="davis">
+<nodes>
+<nodeclass type="Agent" id="agent">
+<node id="EVELYN"/>
+<node id="LAURA"/>
+<node id="THERESA"/>
+<node id="BRENDA"/>
+<node id="CHARLOTTE"/>
+<node id="FRANCES"/>
+<node id="ELEANOR"/>
+<node id="PEARL"/>
+<node id="RUTH"/>
+<node id="VERNE"/>
+<node id="MYRNA"/>
+<node id="KATHERINE"/>
+<node id="SYLVIA"/>
+<node id="NORA"/>
+<node id="HELEN"/>
+<node id="DOROTHY"/>
+<node id="OLIVIA"/>
+<node id="FLORA"/>
+</nodeclass>
+<nodeclass type="Event" id="event">
+<node id="E1"/>
+<node id="E2"/>
+<node id="E3"/>
+<node id="E4"/>
+<node id="E5"/>
+<node id="E6"/>
+<node id="E7"/>
+<node id="E8"/>
+<node id="E9"/>
+<node id="E10"/>
+<node id="E11"/>
+<node id="E12"/>
+<node id="E13"/>
+<node id="E14"/>
+</nodeclass>
+</nodes>
+<networks>
+<network sourceType="Agent" source="agent" targetType="Event" target="event" id="agent x event">
+<link source="EVELYN" target="E1"/>
+<link source="EVELYN" target="E2"/>
+<link source="EVELYN" target="E3"/>
+<link source="EVELYN" target="E4"/>
+<link source="EVELYN" target="E5"/>
+<link source="EVELYN" target="E6"/>
+<link source="EVELYN" target="E8"/>
+<link source="EVELYN" target="E9"/>
+<link source="LAURA" target="E1"/>
+<link source="LAURA" target="E2"/>
+<link source="LAURA" target="E3"/>
+<link source="LAURA" target="E5"/>
+<link source="LAURA" target="E6"/>
+<link source="LAURA" target="E7"/>
+<link source="LAURA" target="E8"/>
+<link source="THERESA" target="E2"/>
+<link source="THERESA" target="E3"/>
+<link source="THERESA" target="E4"/>
+<link source="THERESA" target="E5"/>
+<link source="THERESA" target="E6"/>
+<link source="THERESA" target="E7"/>
+<link source="THERESA" target="E8"/>
+<link source="THERESA" target="E9"/>
+<link source="BRENDA" target="E1"/>
+<link source="BRENDA" target="E3"/>
+<link source="BRENDA" target="E4"/>
+<link source="BRENDA" target="E5"/>
+<link source="BRENDA" target="E6"/>
+<link source="BRENDA" target="E7"/>
+<link source="BRENDA" target="E8"/>
+<link source="CHARLOTTE" target="E3"/>
+<link source="CHARLOTTE" target="E4"/>
+<link source="CHARLOTTE" target="E5"/>
+<link source="CHARLOTTE" target="E7"/>
+<link source="FRANCES" target="E3"/>
+<link source="FRANCES" target="E5"/>
+<link source="FRANCES" target="E6"/>
+<link source="FRANCES" target="E8"/>
+<link source="ELEANOR" target="E5"/>
+<link source="ELEANOR" target="E6"/>
+<link source="ELEANOR" target="E7"/>
+<link source="ELEANOR" target="E8"/>
+<link source="PEARL" target="E6"/>
+<link source="PEARL" target="E8"/>
+<link source="PEARL" target="E9"/>
+<link source="RUTH" target="E5"/>
+<link source="RUTH" target="E7"/>
+<link source="RUTH" target="E8"/>
+<link source="RUTH" target="E9"/>
+<link source="VERNE" target="E7"/>
+<link source="VERNE" target="E8"/>
+<link source="VERNE" target="E9"/>
+<link source="VERNE" target="E12"/>
+<link source="MYRNA" target="E8"/>
+<link source="MYRNA" target="E9"/>
+<link source="MYRNA" target="E10"/>
+<link source="MYRNA" target="E12"/>
+<link source="KATHERINE" target="E8"/>
+<link source="KATHERINE" target="E9"/>
+<link source="KATHERINE" target="E10"/>
+<link source="KATHERINE" target="E12"/>
+<link source="KATHERINE" target="E13"/>
+<link source="KATHERINE" target="E14"/>
+<link source="SYLVIA" target="E7"/>
+<link source="SYLVIA" target="E8"/>
+<link source="SYLVIA" target="E9"/>
+<link source="SYLVIA" target="E10"/>
+<link source="SYLVIA" target="E12"/>
+<link source="SYLVIA" target="E13"/>
+<link source="SYLVIA" target="E14"/>
+<link source="NORA" target="E6"/>
+<link source="NORA" target="E7"/>
+<link source="NORA" target="E9"/>
+<link source="NORA" target="E10"/>
+<link source="NORA" target="E11"/>
+<link source="NORA" target="E12"/>
+<link source="NORA" target="E13"/>
+<link source="NORA" target="E14"/>
+<link source="HELEN" target="E7"/>
+<link source="HELEN" target="E8"/>
+<link source="HELEN" target="E10"/>
+<link source="HELEN" target="E11"/>
+<link source="HELEN" target="E12"/>
+<link source="DOROTHY" target="E8"/>
+<link source="DOROTHY" target="E9"/>
+<link source="OLIVIA" target="E9"/>
+<link source="OLIVIA" target="E11"/>
+<link source="FLORA" target="E9"/>
+<link source="FLORA" target="E11"/>
+</network>
+</networks>
+</MetaNetwork>
+</DynamicMetaNetwork>
