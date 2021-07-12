@@ -16,17 +16,24 @@ their respective audiences, and the polarisation measure stems from the axiomati
 The student will apply the specified strategy to well-known toy problems and to real Twitter data,
 exploring the use of different clustering algorithms to determine the more appropriate choice for
 evaluating the polarisation of an online social network.
-References
+
+### References
+
 [1] Esteban, J., & Ray, D. (1994). On the Measurement of Polarization. Econometrica, 62(4), 819-
 851. doi:10.2307/2951734
+
 [2] Newman, M. (2003). The Structure and Function of Complex Networks. SIAM Rev., 45, 167-
 256.
+
 [3] Salloum, A., Chen, T., & Kivelä, M. (2021). Separating Controversy from Noise: Comparison
 and Normalization of Structural Polarization Measures. ArXiv, abs/2101.07009.
+
 [4] Chen, T., Salloum, A., Gronow, A., Ylä-Anttila, T., & Kivelä, M. (2020). Polarization of Climate
 Politics Results from Partisan Sorting: Evidence from Finnish Twittersphere. ArXiv,
 abs/2007.02706.
 
-Directors
+### Directors
+
 Emanuele Cozzo
+
 Oriol Pujol Vila
