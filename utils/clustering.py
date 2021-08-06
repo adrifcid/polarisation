@@ -2,7 +2,7 @@
 
 import numpy as np
 
-def agglomerative_clustering(y, method='ward', alpha=1):
+def agglomerative_clustering(y, method='ward', alpha=1, K=1):
 
     """
     Perform agglomerative clustering (of the given method) on given condensed distance matrix y. Adapted from scipy's 'linkage' method in https://github.com/scipy/scipy/blob/v1.7.0/scipy/cluster/hierarchy.py.
@@ -14,12 +14,18 @@ def agglomerative_clustering(y, method='ward', alpha=1):
         The linkage method: "single", "complete", "average", "centroid", "median",
         "ward", "weighted" or "polarisation".
     alpha : float
-        Value of the alpha parameter, only used if method="polarisation".
+        Value of the alpha parameter, only used for computing polarisation and, if 
+        method="polarisation", polarisation distance.
+    K : float
+        Value of the normalisation constant used for computing the polarisation (for any method, 
+        although now the result is only correct for methods "centroid" and "polarisation").
         
     Returns
     -------
     Z : ndarray, shape (n - 1, 4)
         Computed linkage matrix.
+    pol : ndarray, shape (n - 1,)
+        Polarisation at each step, from beginning (point clusters) to next-to-last (2 clusters).
     """
     #y = _convert_to_double(np.asarray(y, order='c')) # to normalise input, I guess
 
@@ -41,11 +47,10 @@ def agglomerative_clustering(y, method='ward', alpha=1):
   #      result = _hierarchy.fast_linkage(y, n, method_code)
   #  if method in ['complete', 'average', 'weighted', 'ward']:
   #      result = nn_chain(y, n, method)
-    result = nn_chain(y, n, method, alpha)
-    return result
+    Z, pol = nn_chain(y, n, method, alpha, K)
+    return Z, pol
 
-    
-def nn_chain(dists, n, method="ward", alpha=1):
+def nn_chain(dists, n, method="ward", alpha=1, K=1):
     """Perform hierarchy clustering using nearest-neighbor chain algorithm. Adapted from cython function of the same name in
     https://github.com/scipy/scipy/blob/v1.7.0/scipy/cluster/_hierarchy.pyx.
     Parameters
@@ -58,12 +63,18 @@ def nn_chain(dists, n, method="ward", alpha=1):
         The linkage method: "single", "complete", "average", "centroid", "median",
         "ward", "weighted" or "polarisation".
     alpha : float
-        Value of the alpha parameter, only used if method="polarisation".
+        Value of the alpha parameter, only used for computing polarisation and, if 
+        method="polarisation", polarisation distance.
+    K : float
+        Value of the normalisation constant used for computing the polarisation (for any method, 
+        although now the result is only correct for methods "centroid" and "polarisation").
         
     Returns
     -------
     Z : ndarray, shape (n - 1, 4)
         Computed linkage matrix.
+    pol : ndarray, shape (n - 1,)
+        Polarisation at each step, from beginning (point clusters) to next-to-last (2 clusters).
     """
     ### DEFINE QUANTITIES
     Z_arr = np.empty((n - 1, 4))
@@ -74,6 +85,7 @@ def nn_chain(dists, n, method="ward", alpha=1):
         D_centroids = dists.copy() #keep a parallel array with centroid distances
         
     size = np.ones(n, dtype=np.intc)  # Sizes of clusters.
+    pol = np.empty(n-1) # polarisation at each level
 
     # Variables to store neighbors chain.
     cluster_chain = np.ndarray(n, dtype=np.intc)
@@ -81,6 +93,31 @@ def nn_chain(dists, n, method="ward", alpha=1):
 
     ### ALGORITHM
     for k in range(n - 1):
+        #compute polarisation
+        p=0
+        if method=="polarisation":
+            for i in range(n):
+                ni = size[i]
+                if ni == 0:
+                    continue    
+                for j in range(n):
+                    nj = size[j]
+                    if nj == 0 or j==i:
+                        continue       
+                    p += ni**(1+alpha)*nj*D_centroids[condensed_index(n, i, j)]
+            pol[k] = K*p
+        else:
+            for i in range(n):
+                ni = size[i]
+                if ni == 0:
+                    continue 
+                for j in range(n):
+                    nj = size[j]
+                    if nj == 0 or j==i:
+                        continue
+                    p += ni**(1+alpha)*nj*D[condensed_index(n, i, j)]
+            pol[k] = K*p
+        
         #If chain emplty,pick one existing cluster (the first in size list)
         if chain_length == 0:
             chain_length = 1
@@ -142,38 +179,39 @@ def nn_chain(dists, n, method="ward", alpha=1):
         size[y] = nx + ny  # Cluster y will be replaced with the new cluster
 
         # Update the distance matrix.
-        if method!="polarisation":
+        #if polarisation method, update both pol. and centroid dists
+        if method=="polarisation":
+            for i in range(n):
+                ni = size[i]
+                if ni == 0 or i == y:
+                    continue   
+                cond_idx = condensed_index(n, i, y)
+                D[cond_idx], D_centroids[cond_idx] = distance_update(
+                    D_centroids[condensed_index(n, i, x)],
+                    D_centroids[cond_idx],
+                    D_centroids[condensed_index(n, x, y)], nx, ny, ni, method, alpha)
+        else: 
             for i in range(n):
                 ni = size[i]
                 if ni == 0 or i == y:
                     continue
-
                 D[condensed_index(n, i, y)] = distance_update(
                     D[condensed_index(n, i, x)],
                     D[condensed_index(n, i, y)],
                     current_min, nx, ny, ni, method)
-        else: #if polarisation method, update both pol. and centroid dists
-            for i in range(n):
-                ni = size[i]
-                if ni == 0 or i == y:
-                    continue
-                
-                cond_idx = condensed_index(n, i, y)
-                D[cond_idx], D_centroids[cond_idx] = distance_update(
-                    D_centroids[condensed_index(n, i, x)],
-                    D_centroids[condensed_index(n, i, y)],
-                    D_centroids[condensed_index(n, x, y)], nx, ny, ni, method, alpha)
 
     # Sort Z by cluster distances (the nn_chain algorithm does not produce that
     #order in general)
-    order = np.argsort(Z_arr[:, 2], kind='mergesort')
-    Z_arr = Z_arr[order]
+    order = np.argsort(Z_arr[:, 2], kind='mergesort')#an (n-1)x1 index array
+    Z_arr = Z_arr[order]# orders rows of Z according to "order"
+    pol = pol[order] #same for polarisation vector
 
     # Find correct cluster labels inplace (up to now, the new clusters had no label):
     # we label them accroding to their order of appearance in the newly sorted Z
     label(Z_arr, n)
 
-    return Z_arr
+    return Z_arr, pol
+
 
 def distance_update(d_xi, d_yi, d_xy, size_x, size_y, size_i, method="ward", alpha=1):
     """
@@ -296,4 +334,6 @@ def label(Z, n):
             Z[i, 0], Z[i, 1] = x_root, y_root
         else:
             Z[i, 0], Z[i, 1] = y_root, x_root
+        # weird: without this, new clusters are not correctly labelled
+        #even if sizes are already assigned in nn__chain
         Z[i, 3] = uf.merge(x_root, y_root)
