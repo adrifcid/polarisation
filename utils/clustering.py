@@ -2,7 +2,7 @@
 
 import numpy as np
 
-def agglomerative_clustering(y, method='ward', alpha=1, K=1):
+def agglomerative_clustering(y, method='ward', alpha=1, K=None):
 
     """
     Perform agglomerative clustering (of the given method) on given condensed distance matrix y. Adapted from scipy's 'linkage' method in https://github.com/scipy/scipy/blob/v1.7.0/scipy/cluster/hierarchy.py.
@@ -50,7 +50,7 @@ def agglomerative_clustering(y, method='ward', alpha=1, K=1):
     Z, pol = nn_chain(y, n, method, alpha, K)
     return Z, pol
 
-def nn_chain(dists, n, method="ward", alpha=1, K=1):
+def nn_chain(dists, n, method="ward", alpha=1, K=None):
     """Perform hierarchy clustering using nearest-neighbor chain algorithm. Adapted from cython function of the same name in
     https://github.com/scipy/scipy/blob/v1.7.0/scipy/cluster/_hierarchy.pyx.
     Parameters
@@ -83,6 +83,10 @@ def nn_chain(dists, n, method="ward", alpha=1, K=1):
     D = dists.copy()  # Distances between clusters.
     if method=="polarisation":
         D_centroids = dists.copy() #keep a parallel array with centroid distances
+
+    # by default, set K to 1/max(pol) (for given population and with max dist = 1)
+    if K == None:
+        K = 2/n**(2+alpha) 
         
     size = np.ones(n, dtype=np.intc)  # Sizes of clusters.
     pol = np.empty(n-1) # polarisation at each level
@@ -93,30 +97,32 @@ def nn_chain(dists, n, method="ward", alpha=1, K=1):
 
     ### ALGORITHM
     for k in range(n - 1):
+        if k < n-3:
+            print(f"Iteration {k}/{n-2}...", end='\r')
+        else:
+            print(f"Iteration {k}/{n-2}...") 
         #compute polarisation
         p=0
         if method=="polarisation":
-            for i in range(n):
-                ni = size[i]
-                if ni == 0:
-                    continue    
-                for j in range(n):
-                    nj = size[j]
-                    if nj == 0 or j==i:
-                        continue       
-                    p += ni**(1+alpha)*nj*D_centroids[condensed_index(n, i, j)]
-            pol[k] = K*p
+            D_ctr = D_centroids
         else:
-            for i in range(n):
-                ni = size[i]
-                if ni == 0:
-                    continue 
-                for j in range(n):
-                    nj = size[j]
-                    if nj == 0 or j==i:
-                        continue
-                    p += ni**(1+alpha)*nj*D[condensed_index(n, i, j)]
-            pol[k] = K*p
+            D_ctr = D
+        #    if k == 16:
+        #        print(D_centroids)
+        for i in range(n):
+            ni = size[i]
+            if ni == 0:
+                continue    
+            for j in range(n):
+                nj = size[j]
+                if nj == 0 or j==i:
+                    continue       
+                p += ni**(1+alpha)*nj*D_ctr[condensed_index(n, i, j)]
+                if (k >= n-3) & (i > j):
+                    print(f"Cluster {i} (size {ni}) and cluster {j} (size {nj}) have dist {round(D_ctr[condensed_index(n, i, j)], 2)}")
+        pol[k] = K*p
+        if k >= n-3:
+            print(f"and total polarisation is {int(round(K*p))}")
         
         #If chain emplty,pick one existing cluster (the first in size list)
         if chain_length == 0:
