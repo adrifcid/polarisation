@@ -2,7 +2,7 @@
 
 import numpy as np
 
-def agglomerative_clustering(y, method='ward', alpha=1, K=None):
+def agglomerative_clustering(y, method='ward', alpha=1, K=None, verbose=0):
 
     """
     Perform agglomerative clustering (of the given method) on given condensed distance matrix y. Adapted from scipy's 'linkage' method in https://github.com/scipy/scipy/blob/v1.7.0/scipy/cluster/hierarchy.py.
@@ -47,10 +47,10 @@ def agglomerative_clustering(y, method='ward', alpha=1, K=None):
   #      result = _hierarchy.fast_linkage(y, n, method_code)
   #  if method in ['complete', 'average', 'weighted', 'ward']:
   #      result = nn_chain(y, n, method)
-    Z, pol = nn_chain(y, n, method, alpha, K)
+    Z, pol = nn_chain(y, n, method, alpha, K, verbose)
     return Z, pol
 
-def nn_chain(dists, n, method="ward", alpha=1, K=None):
+def nn_chain(dists, n, method="ward", alpha=1, K=None, verbose=0):
     """Perform hierarchy clustering using nearest-neighbor chain algorithm. Adapted from cython function of the same name in
     https://github.com/scipy/scipy/blob/v1.7.0/scipy/cluster/_hierarchy.pyx.
     Parameters
@@ -97,7 +97,7 @@ def nn_chain(dists, n, method="ward", alpha=1, K=None):
 
     ### ALGORITHM
     for k in range(n - 1):
-        if k < n-3:
+        if (k < n-3) | (verbose == 0):
             print(f"Iteration {k}/{n-2}...", end='\r')
         else:
             print(f"Iteration {k}/{n-2}...") 
@@ -117,12 +117,12 @@ def nn_chain(dists, n, method="ward", alpha=1, K=None):
                 nj = size[j]
                 if nj == 0 or j==i:
                     continue       
-                p += ni**(1+alpha)*nj*D_ctr[condensed_index(n, i, j)]
-                if (k >= n-3) & (i > j):
+                p += K*ni**(1+alpha)*nj*D_ctr[condensed_index(n, i, j)]
+                if (k >= n-3) & (i > j) & (verbose > 0):
                     print(f"Cluster {i} (size {ni}) and cluster {j} (size {nj}) have dist {round(D_ctr[condensed_index(n, i, j)], 2)}")
-        pol[k] = K*p
-        if k >= n-3:
-            print(f"and total polarisation is {int(round(K*p))}")
+        pol[k] = p
+        if (k >= n-3) & (verbose > 0):
+            print(f"and total polarisation is {(round(p, 2))}")
         
         #If chain emplty,pick one existing cluster (the first in size list)
         if chain_length == 0:
