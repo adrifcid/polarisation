@@ -145,13 +145,16 @@ def generic_clustering(dists, n, method, alpha, K, verbose):
     if K == None:
         K = (2/n)**(2+alpha)/2
 
+    #if poldist method, add normalisation constant and size factor 
+    #to initial centroid distances
+    if method == 'poldist':
+        D *= K*2
+    
     # Nearest neighbor candidate and lower bound of the distance to the
     # true nearest neighbor for each cluster among clusters with higher
     # indices (thus size is n - 1).
     neighbor = np.empty(n - 1, dtype=np.intc)
     min_dist = np.empty(n - 1)
-
-    #cdef linkage_distance_update new_dist = linkage_methods[method]
 
     for x in range(n - 1):
         pair = find_min_dist(n, D, size, x)
@@ -302,6 +305,11 @@ def nn_chain(dists, n, method, alpha, K, verbose):
     # by default, set K to 1/max(pol) (for given population and with max dist = 1)
     if K == None:
         K = (2/n)**(2+alpha)/2
+    
+    #if poldist method, add normalisation constant and size factor 
+    #to initial centroid distances
+    if method == 'poldist':
+        D *= K*2
         
     size = np.ones(n, dtype=np.intc)  # Sizes of clusters.
     pol = np.empty(n-1) # polarisation at each level
@@ -390,13 +398,13 @@ def nn_chain(dists, n, method, alpha, K, verbose):
                     current_min, nx, ny, ni, method, alpha)
 
     # Sort Z by cluster distances (the nn_chain algorithm does not produce that
-    #order in geneself.siftral)
+    #order in general)
     order = np.argsort(Z_arr[:, 2], kind='mergesort')#an (n-1)x1 index array
     Z_arr = Z_arr[order]# orders rows of Z according to "order"
     pol = pol[order] #same for polarisation vector
 
     # Find correct cluster labels inplace (up to now, the new clusters had no label):
-    # we label them accroding to their order of appearance in the newly sorted Z
+    # we label them acording to their order of appearance in the newly sorted Z
     label(Z_arr, n)
 
     return Z_arr, pol
@@ -454,7 +462,7 @@ def compute_polarisation(D, size, method, alpha, K, n, k, verbose):
                 p += K * (ni ** (1 + alpha) * nj
                           + nj ** (1 + alpha) * ni) * coef * D[condensed_index(n, i, j)]
             elif method == "poldist":
-                p += K * D[condensed_index(n, i, j)]
+                p += D[condensed_index(n, i, j)]
             if (k >= n - 3) & (verbose > 0):
                 print( f"Cluster {i} (size {ni}) and cluster {j} (size {nj}) "
                     f"have dist {round(D[condensed_index(n, i, j)], 2)}")
