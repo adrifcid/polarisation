@@ -397,7 +397,7 @@ def nn_chain(dists, n, method, alpha, K, verbose):
                     D[condensed_index(n, i, y)],
                     current_min, nx, ny, ni, method, alpha)
 
-    # Sort Z by cluster distances (the nn_chain algorithm does not produce that
+    # Sort Z and pol by cluster distances (the nn_chain algorithm does not produce that
     #order in general)
     order = np.argsort(Z_arr[:, 2], kind='mergesort')#an (n-1)x1 index array
     Z_arr = Z_arr[order]# orders rows of Z according to "order"
