@@ -1,38 +1,12 @@
 This repository contains all the code and documentation used in Adrián Fernández Cid's Master Thesis (University of Barcelona).
 
- # A study of polarisaton in online (Twitter) social networks
-The phenomenon of polarisation is believed to lie at the root of misinformation, whose influence on
-societal matters like elections or public policies regarding issues like climate change or the present
-pandemic has attracted increasing academic and social attention.
-One approach to the study of polarisation is that offered by complex network analysis, the typical
-procedure being 1) constructing a graph representation (consisting of nodes and links) of the social
-system; 2) determining a partition of such a graph in terms of groups, or clusters, that differ in a
-property of interest (such as being in favour or against abortion); and 3) evaluating the polarisation
-of the partitioned graph by means of a so-called polarisation measure. Each of these 3 steps (graph
-representation, clustering, and evaluation) offer some freedom, and in this project the first and the
-last will be fixed. The graph representation will consist of nodes corresponding to crowd-sourced
-Twitter elite users (also called influencers in regular language) connected in terms of the overlap of
-their respective audiences, and the polarisation measure stems from the axiomatic proposal of [1].
-The student will apply the specified strategy to well-known toy problems and to real Twitter data,
-exploring the use of different clustering algorithms to determine the more appropriate choice for
-evaluating the polarisation of an online social network.
+ # A study of polarisaton in bimodal social networks
 
-### References
+## Abstract
 
-[1] Esteban, J., & Ray, D. (1994). On the Measurement of Polarization. Econometrica, 62(4), 819-
-851. doi:10.2307/2951734
+Social polarisation is a central issue in the social sciences, and it has acquired mainstream interest in recent years. A prominent area of current research in computational social science studies the polarisation of social systems in terms of features of their graph representation. Such structural polarisation measures can capture well-grounded aspects of polarisation at a comparatively lower cost than content-based or distributional approaches, although some of them have been shown to depend on unrelated network properties like average degree or systematically give false positives on randomised networks. In this master's thesis, I explore a novel approach that implements an axiomatic polarisation measure with hierarchical clustering on bimodal networks, which are less studied in the literature. The clustering implements the well known Ward and centroid methods, as well as a new one, \textit{poldist}, inspired by the polarisation measure used. In the validation use case, on the standard Southern Women dataset, results reasonably agree with the expected separation in two communities for the Ward and centroid methods, but not for poldist. On the other hand, the application use case, on data from the platform of the Conference on the Future of Europe, shows no significant dipoles neither in the topic-specific nor the global analysis, which (given the previous pipeline validation and the relatively low participation of the platform) points to a lack of polarisation in the data. However, further analysis on such data in terms of multipole partitions is underway and may yet reveal some structure. Current results show the proposed pipeline is a promising candidate for the study of polarisation in bimodal social networks and should be further explored.
 
-[2] Newman, M. (2003). The Structure and Function of Complex Networks. SIAM Rev., 45, 167-
-256.
-
-[3] Salloum, A., Chen, T., & Kivelä, M. (2021). Separating Controversy from Noise: Comparison
-and Normalization of Structural Polarization Measures. ArXiv, abs/2101.07009.
-
-[4] Chen, T., Salloum, A., Gronow, A., Ylä-Anttila, T., & Kivelä, M. (2020). Polarization of Climate
-Politics Results from Partisan Sorting: Evidence from Finnish Twittersphere. ArXiv,
-abs/2007.02706.
-
-### Directors
+### Supervisors
 
 Emanuele Cozzo
 
