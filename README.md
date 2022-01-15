@@ -11,3 +11,26 @@ Social polarisation is a central issue in the social sciences, and it has acquir
 Emanuele Cozzo
 
 Oriol Pujol Vila
+
+## Folder structure
+```bash
+.
+├── PFM_AdrianFernandezCid.pdf                # Project report
+├── notebooks                                 # IPython notebooks of use cases
+│   ├── SouthernWomen.ipynb                   # Validation use case
+│   └── ConferenceOnTheFutureOfEurope.ipynb   # Application use case 
+├── utils                                     # Clustering code
+│   └── clustering.py  
+├── data                                      # Data of use cases
+│   ├── SW/                                   # Validation use case
+│   └── CFE/                                  # Application use case 
+├── plots                                     # Plots of use case results
+│   ├── SW/                                   # Validation use case
+│   └── CFE/                                  # Application use case                       
+└── literature/                               # Some of the references of the project 
+```
+The high-level description of the project is contained, in the intended order of presentation, in PFM_AdrianFernandezCid.pdf, SouthernWomen.ipynb and ConferenceOnTheFutureOfEurope.ipynb. I recommend following that progression for revision.
+
+**NB**: Before using the CFE data in ConferenceOnTheFutureOfEurope.ipynb you will have to unzip the corresponding file in data/CFE/.
+
+Adrián Fernández Cid
